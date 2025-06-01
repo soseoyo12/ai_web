@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 const GlobalStyle = createGlobalStyle`
@@ -141,7 +139,7 @@ function App() {
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
-    const newMessages = [...messages, { role: 'user', content: input }];
+    const newMessages = [...messages, { role: 'user' as 'user', content: input }];
     setMessages(newMessages);
     setInput('');
     setLoading(true);
@@ -152,9 +150,12 @@ function App() {
         body: JSON.stringify({ messages: newMessages })
       });
       const data = await res.json();
-      setMessages([...newMessages, { role: 'assistant', content: data.reply }]);
+      setMessages([...newMessages, { role: 'assistant' as 'assistant', content: data.reply }]);
     } catch (err) {
-      setMessages([...newMessages, { role: 'assistant', content: '오류가 발생했습니다. 다시 시도해주세요.' }]);
+      setMessages([
+        ...newMessages,
+        { role: 'assistant' as 'assistant', content: '오류가 발생했습니다. 다시 시도해주세요.' }
+      ]);
     }
     setLoading(false);
   };
