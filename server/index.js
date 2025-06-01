@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const OpenAI = require('openai');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -9,6 +10,14 @@ app.use(express.json());
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+});
+
+// 정적 파일 서빙 (client/dist)
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// SPA 라우팅 지원 (모든 GET 요청에 대해 index.html 반환)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 // GPT에게 질문을 전달하고 답변을 받는 엔드포인트
