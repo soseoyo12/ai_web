@@ -8,19 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-// 정적 파일 서빙 (client/dist)
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-// SPA 라우팅 지원 (모든 GET 요청에 대해 index.html 반환)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-// GPT에게 질문을 전달하고 답변을 받는 엔드포인트
+// 1. API 라우트 먼저!
 app.post('/api/ask', async (req, res) => {
   const { messages } = req.body; // [{role: 'user'|'assistant', content: '...'}]
   if (!messages) {
@@ -36,6 +24,18 @@ app.post('/api/ask', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// 2. 정적 파일 서빙
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// 3. SPA 라우트는 맨 마지막!
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const PORT = process.env.PORT || 5001;
