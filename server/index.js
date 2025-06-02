@@ -29,8 +29,8 @@ app.post('/api/ask', async (req, res) => {
 // 2. 정적 파일 서빙
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// 3. SPA 라우트는 맨 마지막!
-app.get('*', (req, res) => {
+// 3. SPA 라우트 (맨 마지막, 반드시 '/*'로!)
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
